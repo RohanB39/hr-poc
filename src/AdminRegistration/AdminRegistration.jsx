@@ -3,7 +3,7 @@ import { auth, fireDB } from "../Firebase/FirebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { collection, doc, setDoc, query, where, getDocs } from "firebase/firestore";
 import adminStyle from './Admin.module.css';
-import RegistrationImage from '../assets/registration.png';
+import RegistrationImage from '../../public/assets/registration.png';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 

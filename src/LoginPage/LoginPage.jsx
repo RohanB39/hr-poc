@@ -3,7 +3,7 @@ import { FaUser, FaLock } from 'react-icons/fa';
 import { fireDB, auth, signInWithEmailAndPassword } from '../Firebase/FirebaseConfig';
 import { collection, getDocs } from 'firebase/firestore';
 import styles from './Login.module.css';
-import Loginillustration from '../assets/Login.jpg';
+import Loginillustration from '../../public/assets/login.jpg';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 

@@ -4,7 +4,7 @@ import { fireDB } from '../Firebase/FirebaseConfig';
 import { collection, getDocs } from 'firebase/firestore';
 import Swal from 'sweetalert2';
 import styles from './Forget.module.css';
-import forgetIllustration from '../assets/forget.jpg';
+import forgetIllustration from '../../public/assets/forget.jpg';
 import { Link } from 'react-router-dom';
 import emailjs from 'emailjs-com';
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
