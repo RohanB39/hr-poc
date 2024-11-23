@@ -1,0 +1,502 @@
+.main {
+  display: flex;
+  height: 150vh;
+}
+
+.content {
+  margin-left: 250px;
+  flex: 1;
+  padding: 20px;
+  transition: margin-left 0.3s ease;
+}
+
+.main .sidebar.collapsed + .content {
+  margin-left: 60px;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: absolute;
+    z-index: 10;
+    width: 100%;
+    height: auto;
+  }
+
+  .content {
+    margin-left: 60px;
+    width: 100%;
+    overflow: scroll;
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ddd;
+  background-color: #fff;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.red {
+  background-color: red;
+}
+
+.yellow {
+  background-color: yellow;
+}
+
+.green {
+  background-color: green;
+}
+
+.pageTitle {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.headerRight {
+  display: flex;
+  gap: 30px;
+}
+
+.icon {
+  font-size: 20px;
+  cursor: pointer;
+  color: rgb(66, 63, 63);
+}
+
+.tables {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 600px; 
+  margin-top: 20px;
+}
+
+.table {
+  width: 120%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.tableContainer {
+  max-height: 500px;
+  overflow-y: auto; 
+  border: 1px solid #ddd;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(0, 6, 65) #f4f4f4;
+}
+
+
+.table th,
+.table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+  word-wrap: break-word;
+  font-size: 13px;
+}
+
+.table th {
+  background: rgb(0, 6, 65);
+  color: white;
+}
+
+.collapseButtonContainer {
+  display: flex;
+  gap: 10px;
+}
+
+.collapseButtonContainer>h2 {
+  font-size: 15px;
+}
+
+.tables {
+  margin-bottom: 30px;
+}
+
+/* Make the table scrollable on small screens */
+@media (max-width: 768px) {
+  .table {
+    width: 100%;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .table th,
+  .table td {
+    display: inline-block; /* Stack cells on top of each other */
+    width: auto; /* Allow cells to grow to fit the content */
+  }
+
+  .table th {
+    font-size: 14px;
+  }
+
+  .table td {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  .editForm>div {
+    display: block;
+  }
+}
+  
+.searchContainer {
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.searchBar {
+  width: 100%;
+  max-width: 300px; /* Adjust the max width as needed */
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+
+  /* Add focus effect */
+  outline: none;
+}
+
+.searchBar:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.tableIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  cursor: pointer;
+}
+
+.signinOut {
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  color: black;
+  background: none;
+  padding: 6px 0px;
+  font-size: 13px;
+}
+
+.signinOut:hover {
+  background: rgb(26, 4, 123);
+  color: white;
+
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal form styling */
+.editForm {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 700px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.editForm>div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+}
+
+/* Styling for buttons */
+.editButtons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.editButtons button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.editButtons button:hover {
+  background-color: #0056b3;
+}
+
+.editButtons button:active {
+  background-color: #003c80;
+}
+
+/* Input field styling */
+input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+input[type="text"]:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+/* Styling for the calendar popup container */
+.calendarPopup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 550px; /* Make it slightly wider */
+  max-width: 90%;
+  overflow: hidden;
+  text-align: center;
+}
+
+/* Overlay behind the popup */
+.calendarOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  background: #bababac2;
+}
+
+
+/* Calendar content (table and buttons) */
+.calendarContent {
+  position: relative;
+  z-index: 1001;
+}
+
+.calendarControls {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  font-size: 18px; /* Make controls slightly bigger */
+}
+
+.calendarTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.calendarTable th,
+.calendarTable td {
+  padding: 12px; /* Increase padding for a larger click area */
+  text-align: center;
+  border: 1px solid #3d3c3c;
+  width: 40px; /* Increase width */
+  height: 40px; /* Increase height */
+}
+
+.calendarTable td {
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.leaves {
+  background-color: #ffb43b;
+  color: #000;
+  font-weight: bold;
+  border-radius: 0px;
+  position: relative;
+}
+
+.present {
+  color: #fff;
+  font-weight: bold;
+  border-radius: 0px;
+  position: relative;
+}
+
+
+.presentt {
+  background-color: #53fb47;
+  color: #000;
+  font-weight: bold;
+  border-radius: 0px;
+  position: relative;
+}
+
+.notComplete {
+  background-color: #ff0303;
+  color: #000;
+  font-weight: bold;
+  border-radius: 0px;
+  position: relative;
+}
+
+.default {
+  background-color: #f0bdbd;
+  color: #000;
+  border-radius: 0px;
+  position: relative;
+}
+
+.tooltip {
+  position: absolute;
+  top: -30px;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+  width: max-content;
+}
+
+
+.highlighted:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+.leaves:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+.presentt:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+.notComplete:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+.default:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+
+.calendarTable th {
+  background-color: #f1f1f1;
+  font-weight: bold;
+  font-size: 16px; /* Make header text larger */
+}
+
+/* Close button styling */
+.closeButton {
+  background: rgb(0, 16, 54);
+  color: white;
+  padding: 8px 20px; /* Increase padding */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+  font-size: 16px; /* Make the button text bigger */
+}
+
+.closeButton:hover {
+  background-color: #0056b3;
+}
+
+/* Calendar Icon */
+.calendarIcon {
+  cursor: pointer;
+  font-size: 28px; /* Increase icon size */
+  color: #007bff;
+  transition: color 0.3s ease;
+}
+
+.calendarIcon:hover {
+  color: #0056b3;
+}
+
+/* Responsive styling */
+@media (max-width: 600px) {
+  .calendarPopup {
+    width: 90%; /* Make the calendar popup width responsive */
+    padding: 15px; /* Reduce padding on smaller screens */
+  }
+
+  .calendarControls {
+    font-size: 16px; /* Reduce font size for smaller screens */
+  }
+
+  .calendarTable th,
+  .calendarTable td {
+    width: 30px; /* Reduce width on smaller screens */
+    height: 30px; /* Reduce height on smaller screens */
+  }
+
+  .calendarTable td {
+    padding: 8px; /* Reduce padding for smaller screens */
+  }
+
+  .closeButton {
+    padding: 6px 15px; /* Reduce button padding on smaller screens */
+    font-size: 14px; /* Reduce font size for smaller screens */
+  }
+}
+
+.prv {
+  color: white;
+  background: rgb(0, 16, 54);
+  padding: 5px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.info {
+  text-align: left;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}

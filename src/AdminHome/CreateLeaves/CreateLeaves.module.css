@@ -1,0 +1,357 @@
+.main {
+  display: flex;
+  height: 100vh;
+}
+
+.content {
+  margin-left: 250px;
+  flex: 1;
+  padding: 20px;
+  transition: margin-left 0.3s ease;
+}
+
+.main .sidebar.collapsed + .content {
+  margin-left: 60px;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: absolute;
+    z-index: 10;
+    width: 100%;
+    height: auto;
+  }
+
+  .content {
+    margin-left: 60px;
+    width: 100%;
+    overflow: scroll;
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ddd;
+  background-color: #fff;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.red {
+  background-color: red;
+}
+
+.yellow {
+  background-color: yellow;
+}
+
+.green {
+  background-color: green;
+}
+
+.pageTitle {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.headerRight {
+  display: flex;
+  gap: 30px;
+}
+
+.icon {
+  font-size: 20px;
+  cursor: pointer;
+  color: rgb(66, 63, 63);
+}
+
+/* Main wrapper for the form */
+.leaveForm {
+  max-width: 100%;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Grouping form elements with spacing */
+.formGroup {
+  margin-bottom: 20px;
+}
+
+/* Label styling */
+label {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+/* Styling for input/select elements */
+.select, .input, .readonlyInput {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border 0.3s ease;
+}
+
+.select:focus, .input:focus, .readonlyInput:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Styling for the 'Add' button */
+.addButton {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #032345;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+.addButton:hover {
+  background-color: #0056b3;
+}
+
+/* Styling for the 'readonly' input */
+.readonlyInput {
+  background-color: #f1f1f1;
+  color: #555;
+  cursor: not-allowed;
+}
+
+/* Flexbox layout for larger screens */
+@media (min-width: 768px) {
+  .leaveForm {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .formGroup {
+    width: calc(50% - 10px);
+  }
+
+  .formGroup:last-child {
+    width: 100%;
+  }
+}
+
+/* Mobile styling */
+@media (max-width: 767px) {
+  .leaveForm {
+    padding: 15px;
+  }
+
+  .formGroup {
+    width: 100%;
+  }
+
+  .addButton {
+    width: 100%;
+    padding: 12px;
+    font-size: 18px;
+  }
+}
+
+.dateRange {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  align-items: center;
+}
+
+/* Date input styling */
+.dateInput {
+  width: 45%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border 0.3s ease;
+}
+
+.dateInput:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Label styling for the date inputs */
+.dateLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-right: 8px;
+}
+
+/* Mobile responsiveness: Full-width on small screens */
+@media (max-width: 767px) {
+  .dateRange {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .dateInput {
+    width: 100%;
+  }
+}
+
+/* Table container */
+/* Table container */
+.leaveTable {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 20px;
+  margin-bottom: 50px;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  max-width: 100%; /* Ensure the table takes up full width */
+  overflow-y: hidden; /* Hide vertical scrollbar if present */
+}
+
+/* Table Heading */
+.leaveTable h3 {
+  font-size: 24px;
+  margin-bottom: 15px;
+  text-align: center;
+  color: #333;
+}
+
+/* Table */
+.table {
+  width: 120%; /* Increase table width to exceed container */
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+/* Table Header */
+.table th {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 2px solid #ddd;
+  font-size: 14px;
+}
+
+/* Table Rows */
+.table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  background-color: #fff;
+}
+
+/* Hover effect on rows */
+.table tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Alternate row colors */
+.table tr:nth-child(odd) {
+  background-color: #f9f9f9;
+}
+
+/* Submit Button Styling */
+.submitButton {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.submitButton:hover {
+  background-color: #45a049;
+}
+
+/* Responsive Styling */
+@media screen and (max-width: 768px) {
+
+  .table {
+    width: 100%;
+    overflow-x: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .table th, .table td {
+    /* display: block; */
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Label for each cell in mobile view */
+  .table th {
+    display: none;
+  }
+
+  .table td {
+    position: relative;
+    padding-left: 50%;
+  }
+
+  .table td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 10px;
+    top: 12px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .submitButton {
+    width: 100%;
+    padding: 10px 0;
+    text-align: center;
+  }
+}
+
+/* Scrollbar Styling for Webkit browsers */
+.leaveTable::-webkit-scrollbar {
+  height: 10px; /* Set the height of the horizontal scrollbar */
+}
+
+.leaveTable::-webkit-scrollbar-thumb {
+  background-color: #042f5c;
+  border-radius: 5px;
+}
+
+.leaveTable::-webkit-scrollbar-track {
+  background-color: #f1f1f1; /* Light background for the track */
+}
+
+/* Style for mobile buttons */
+.submitButton {
+  width: auto;
+}
+
+
+

@@ -1,0 +1,105 @@
+/* Container for the table */
+  
+.table {
+    width: 120%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+  
+  .tableContainer {
+    max-height: 500px;
+    overflow-y: auto; 
+    scrollbar-width: thin;
+    scrollbar-color: rgb(0, 6, 65) #f4f4f4;
+    margin-top: 40px;
+  }
+  
+  
+  .table th,
+  .table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+    word-wrap: break-word;
+    font-size: 13px;
+  }
+  
+  .table th {
+    background: rgb(0, 6, 65);
+    color: white;
+  }
+  
+  .collapseButtonContainer {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .collapseButtonContainer>h2 {
+    font-size: 15px;
+  }
+  
+  .tables {
+    margin-bottom: 30px;
+  }
+  
+  /* Make the table scrollable on small screens */
+  @media (max-width: 768px) {
+    .table {
+      width: 100%;
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+  
+    .table th,
+    .table td {
+      display: inline-block; /* Stack cells on top of each other */
+      width: auto; /* Allow cells to grow to fit the content */
+    }
+  
+    .table th {
+      font-size: 14px;
+    }
+  
+    .table td {
+      font-size: 12px;
+      padding: 8px;
+    }
+  
+    .editForm>div {
+      display: block;
+    }
+  }
+    
+  .searchContainer {
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .searchBar {
+    width: 100%;
+    max-width: 300px; /* Adjust the max width as needed */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+  
+    /* Add focus effect */
+    outline: none;
+  }
+  
+  .searchBar:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+  
+  .tableIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    cursor: pointer;
+  }

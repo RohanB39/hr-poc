@@ -1,0 +1,134 @@
+.loginContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  flex-wrap: wrap;
+}
+
+.mainContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80%;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.loginBox {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  margin-right: 20px;
+  flex-shrink: 0;
+}
+
+h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 500;
+  color: rgb(30 64 175);
+}
+
+.inputGroup {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.inputGroup input {
+  width: 100%;
+  padding: 15px 15px;
+  padding-left: 35px;
+  font-size: 0.7rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.inputGroup .icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  color: #888;
+}
+
+
+.forgotPasswordLink {
+    top: 0;
+    text-align: right;
+    margin-top: -20px;
+    margin-bottom: 10px;
+    font-size: 12px;
+}
+
+button {
+  background: rgb(30 64 175);
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-weight: bold;
+  transition: background 0.3s ease;
+  width: 60%;
+}
+
+button:hover {
+    background: rgb(20, 42, 115);
+}
+
+.errorMessage {
+  color: red;
+  margin-bottom: 15px;
+}
+
+.illustrationContainer {
+  max-width: 500px;
+  flex: 1;
+}
+
+.illustration {
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 768px) {
+  .loginContainer {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .loginBox {
+    width: 100%;
+    max-width: none;
+    margin-right: 0;
+  }
+
+  .illustrationContainer {
+    max-width: 100%;
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .loginBox {
+    padding: 20px;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  .inputGroup input {
+    font-size: 0.9rem;
+  }
+}
