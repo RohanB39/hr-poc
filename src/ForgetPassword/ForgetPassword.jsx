@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaUser } from 'react-icons/fa';
 import { fireDB } from '../Firebase/FirebaseConfig';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import Swal from 'sweetalert2';
 import styles from './Forget.module.css';
 import forgetIllustration from '../../public/assets/forget.jpg';
@@ -18,23 +18,31 @@ const ForgetPassword = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [userEmail, setUserEmail] = useState('');
     const [otpInput, setOtpInput] = useState('');
+    const [otp, setOtp] = useState('');
 
     const handleSendOtp = async () => {
         setLoading(true);
         setError('');
 
         try {
+            // Check if username exists in Firestore
             const usersRef = collection(fireDB, 'Users');
-            const userSnapshot = await getDocs(usersRef);
-            const userDoc = userSnapshot.docs.find(doc => doc.id === username);
-            if (userDoc) {
+            const q = query(usersRef, where("username", "==", username));  // Query by username field
+            const userSnapshot = await getDocs(q);
+
+            if (!userSnapshot.empty) {
+                const userDoc = userSnapshot.docs[0];
                 const email = userDoc.data().email;
                 const firstName = userDoc.data().firstName;
                 const lastName = userDoc.data().lastName;
                 const userFullName = `${firstName} ${lastName}`;
                 setUserEmail(email);
-                const otp = Math.floor(100000 + Math.random() * 900000);
-                sendOtpEmail(email, userFullName, otp);
+
+                // Generate OTP
+                const generatedOtp = Math.floor(100000 + Math.random() * 900000);
+                setOtp(generatedOtp);  // Store OTP to verify later
+                sendOtpEmail(email, userFullName, generatedOtp);
+
                 Swal.fire({
                     title: 'Enter OTP',
                     text: `An OTP has been sent to ${email}. Please enter the OTP.`,
@@ -44,7 +52,7 @@ const ForgetPassword = () => {
                     cancelButtonText: 'Cancel',
                     preConfirm: (otpInput) => {
                         setOtpInput(otpInput);
-                        if (otpInput !== otp.toString()) {
+                        if (otpInput !== generatedOtp.toString()) {
                             Swal.showValidationMessage('Invalid OTP. Please try again.');
                             return false;
                         }
@@ -57,10 +65,12 @@ const ForgetPassword = () => {
                 setLoading(false);
             }
         } catch (error) {
+            console.error('Error fetching user data:', error);
             setError('An error occurred. Please try again.');
             setLoading(false);
         }
     };
+
     const sendOtpEmail = (userEmail, userFullName, otp) => {
         const templateParams = {
             to_email: userEmail,
@@ -89,7 +99,7 @@ const ForgetPassword = () => {
             if (userEmail) {
                 const auth = getAuth();
                 await sendPasswordResetEmail(auth, userEmail);
-    
+
                 Swal.fire('Password Reset Email Sent', 'Please check your inbox to reset your password.', 'success');
             } else {
                 setError('No email found!');
@@ -113,6 +123,8 @@ const ForgetPassword = () => {
                 <div className={styles.loginBox}>
                     <h2>Forgot Password</h2>
                     {error && <p className={styles.errorMessage}>{error}</p>}
+                    
+                    {/* Input for username */}
                     {!otpVerified && (
                         <div className={styles.inputGroup}>
                             <FaUser className={styles.icon} />
@@ -124,25 +136,28 @@ const ForgetPassword = () => {
                             />
                         </div>
                     )}
-                    
+
+                    {/* Link to Login page */}
                     {!otpVerified && (
                         <div className={styles.forgotPasswordLink}>
                             <Link to="/">Login</Link>
                         </div>
                     )}
 
+                    {/* Send OTP Button */}
                     {!otpVerified && (
                         <button onClick={handleSendOtp} disabled={loading}>
                             {loading ? 'Sending OTP...' : 'Send OTP'}
                         </button>
                     )}
 
+                    {/* Display email and send reset link if OTP is verified */}
                     {otpVerified && (
                         <>
                             <div className={styles.inputGroup}>
                                 <p>{userEmail}</p>
                             </div>
-                            <button onClick={handlePasswordUpdate}>Send Link</button>
+                            <button onClick={handlePasswordUpdate}>Send Reset Link</button>
                         </>
                     )}
                 </div>

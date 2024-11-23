@@ -19,7 +19,7 @@ const LoginPage = () => {
       setError('Please enter both username and password');
       return;
     }
-  
+
     setLoading(true);
     try {
       const querySnapshot = await getDocs(collection(fireDB, 'Users'));
@@ -27,7 +27,7 @@ const LoginPage = () => {
       let userEmail = '';
       let userRole = '';
       let managerStatus = '';
-  
+
       querySnapshot.forEach((doc) => {
         if (doc.id === username) {
           userFound = true;
@@ -36,7 +36,7 @@ const LoginPage = () => {
           managerStatus = doc.data().managerStatus;
         }
       });
-  
+
       if (!userFound) {
         setError('Username not found');
         setLoading(false);
@@ -88,8 +88,13 @@ const LoginPage = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <div className={styles.forgotPasswordLink}>
-            <Link to="/forgot-password">Forgot Password?</Link>
+          <div className={styles.sign}>
+            <div className={styles.forgotPasswordLink}>
+              <Link to="/registration">SignUp?</Link>
+            </div>
+            <div className={styles.forgotPasswordLink}>
+              <Link to="/forgot-password">Forgot Password?</Link>
+            </div>
           </div>
           <button onClick={handleLogin} disabled={loading}>
             {loading ? 'Logging in...' : 'Login'}

@@ -6,6 +6,7 @@ import adminStyle from './Admin.module.css';
 import RegistrationImage from '../../public/assets/registration.png';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 function AdminRegistration() {
     const [formData, setFormData] = useState({
@@ -189,6 +190,10 @@ function AdminRegistration() {
                         <button type="submit" className={adminStyle.button}>
                             Register
                         </button>
+                        <div className={adminStyle.forgotPasswordLink}>
+                            <Link to="/">Login?</Link>
+                        </div>
+
                     </form>
                     {usernameAvailable === false && (
                         <p className={adminStyle.error}>Username is not available</p>

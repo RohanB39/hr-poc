@@ -59,10 +59,15 @@ h2 {
   color: #888;
 }
 
+.sign {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 
 .forgotPasswordLink {
     top: 0;
-    text-align: right;
     margin-top: -20px;
     margin-bottom: 10px;
     font-size: 12px;
