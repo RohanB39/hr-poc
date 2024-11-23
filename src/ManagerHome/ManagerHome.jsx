@@ -1,93 +1,145 @@
-import React, { useState } from 'react'
-import styles from './ManagerHome.module.css';
-import ManagerSidebar from './ManagerSidebar/ManagerSidebar';
+import React, { useEffect, useState } from 'react';
 import { Bell, Power } from 'react-feather';
 import { useTable } from 'react-table';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { AiOutlineUp, AiOutlineDown } from 'react-icons/ai';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { fireDB } from '../Firebase/FirebaseConfig';
+import { useNavigate } from 'react-router-dom';
+import { signOut } from 'firebase/auth';
+import { auth } from '../Firebase/FirebaseConfig';
+import styles from './ManagerHome.module.css';
+import ManagerSidebar from './ManagerSidebar/ManagerSidebar';
+
 
 const ManagerHome = () => {
 
   const [isPresentCollapsed, setIsPresentCollapsed] = useState(false);
-  const [isAbsentCollapsed, setIsAbsentCollapsed] = useState(false);
   const [isTotalCollapsed, setIsTotalCollapsed] = useState(false);
+  const [presentData, setPresentData] = useState([]);
+  const [totalData, setTotalData] = useState([]);
+  const [presentSearchQuery, setPresentSearchQuery] = useState('');
+  const [totalSearchQuery, setTotalSearchQuery] = useState('');
 
-  const data = React.useMemo(
+  const navigate = useNavigate(); // Initialize navigate
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth); // Sign out the user
+      navigate('/'); // Redirect to the login or home page
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
+  useEffect(() => {
+    // Fetch Present Employees Data
+    const fetchAttendanceData = async () => {
+      try {
+        const todayDate = new Date().toISOString().slice(0, 10); // Format: YYYY-MM-DD
+        const attendanceCollection = collection(fireDB, 'AttendanceData');
+        const snapshot = await getDocs(attendanceCollection);
+
+        let matchingData = [];
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          if (data[todayDate]) {
+            const entry = data[todayDate];
+            matchingData.push({
+              employeeId: entry.employeeId,
+              employeeName: entry.employeeName,
+              designation: entry.designation,
+              signInTime: entry.signInTime,
+              signOutTime: entry.signOutTime,
+            });
+          }
+        });
+
+        setPresentData(matchingData);
+      } catch (error) {
+        console.error('Error fetching attendance data:', error);
+      }
+    };
+
+    // Fetch Total Employees Data
+    const fetchTotalEmployeesData = async () => {
+      try {
+        const employeeQuery = query(
+          collection(fireDB, 'EmployeeData'),
+          where('Status', '==', 'Active')
+        );
+        const snapshot = await getDocs(employeeQuery);
+
+        const activeEmployees = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          firstName: doc.data().firstName,
+          lastName: doc.data().lastName,
+          designation: doc.data().designation,
+          address: doc.data().address,
+          mobile: doc.data().mobile,
+        }));
+
+        setTotalData(activeEmployees);
+      } catch (error) {
+        console.error('Error fetching total employees data:', error);
+      }
+    };
+
+    fetchAttendanceData();
+    fetchTotalEmployeesData();
+  }, []);
+
+  // Define Present Employees Table Columns
+  const presentColumns = React.useMemo(
     () => [
-      { srNo: 1, employeeId: 'E001', employeeName: 'John Doe', designation: 'Software Engineer', address: '123 Main St' },
-      { srNo: 2, employeeId: 'E002', employeeName: 'Jane Smith', designation: 'Product Manager', address: '456 Oak St' },
-      { srNo: 3, employeeId: 'E003', employeeName: 'Sam Brown', designation: 'Designer', address: '789 Pine St' },
-      { srNo: 4, employeeId: 'E004', employeeName: 'Anna Lee', designation: 'QA Engineer', address: '101 Maple St' },
-      { srNo: 5, employeeId: 'E004', employeeName: 'Anna Lee', designation: 'QA Engineer', address: '101 Maple St' },
-      { srNo: 6, employeeId: 'E004', employeeName: 'Anna Lee', designation: 'QA Engineer', address: '101 Maple St' },
-      { srNo: 7, employeeId: 'E004', employeeName: 'Anna Lee', designation: 'QA Engineer', address: '101 Maple St' },
+      { Header: 'Sr. No', accessor: (row, i) => i + 1 },
+      { Header: 'Employee ID', accessor: 'employeeId' },
+      { Header: 'Employee Name', accessor: 'employeeName' },
+      { Header: 'Designation', accessor: 'designation' },
+      { Header: 'Sign-In Time', accessor: 'signInTime' },
+      { Header: 'Sign-Out Time', accessor: 'signOutTime' },
     ],
     []
   );
 
-  const columns = React.useMemo(
+  // Define Total Employees Table Columns
+  const totalColumns = React.useMemo(
     () => [
-      {
-        Header: 'Sr. No',
-        accessor: 'srNo',
-      },
-      {
-        Header: 'Employee ID',
-        accessor: 'employeeId',
-      },
-      {
-        Header: 'Employee Name',
-        accessor: 'employeeName',
-      },
-      {
-        Header: 'Designation',
-        accessor: 'designation',
-      },
-      {
-        Header: 'Address',
-        accessor: 'address',
-      },
-      {
-        Header: 'Action',
-        Cell: ({ row }) => (
-          <div className={styles.tableIcon}>
-            <span onClick={() => handleEdit(row.original)} >
-              <FaEdit />
-            </span>
-            <span className={styles.trash} onClick={() => handleDelete(row.original)} >
-              <FaTrash />
-            </span>
-          </div>
-        ),
-      },
+      { Header: 'Sr. No', accessor: (row, i) => i + 1 },
+      { Header: 'First Name', accessor: 'firstName' },
+      { Header: 'Last Name', accessor: 'lastName' },
+      { Header: 'Designation', accessor: 'designation' },
+      { Header: 'Address', accessor: 'address' },
+      { Header: 'Mobile', accessor: 'mobile' },
     ],
     []
   );
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({ columns, data });
-
-  const [presentsearchQuery, setpresentSearchQuery] = useState('');
-  const [absentsearchQuery, seabsentSearchQuery] = useState('');
-  const [totalearchQuery, setTotalSearchQuery] = useState('');
-
-  // Filter rows based on the search query
-  const filteredOresentRows = rows.filter(row =>
-    Object.values(row.original).some(field =>
-      String(field).toLowerCase().includes(presentsearchQuery.toLowerCase())
-    )
+  // Filter Present Data
+  const presentDataFiltered = React.useMemo(
+    () =>
+      presentData.filter((row) =>
+        Object.values(row).some((field) =>
+          String(field).toLowerCase().includes(presentSearchQuery.toLowerCase())
+        )
+      ),
+    [presentData, presentSearchQuery]
   );
 
-  const filteredAbsentRows = rows.filter(row =>
-    Object.values(row.original).some(field =>
-      String(field).toLowerCase().includes(absentsearchQuery.toLowerCase())
-    )
+  // Filter Total Employees Data
+  const totalDataFiltered = React.useMemo(
+    () =>
+      totalData.filter((row) =>
+        Object.values(row).some((field) =>
+          String(field).toLowerCase().includes(totalSearchQuery.toLowerCase())
+        )
+      ),
+    [totalData, totalSearchQuery]
   );
 
-  const filteredTotRowals = rows.filter(row =>
-    Object.values(row.original).some(field =>
-      String(field).toLowerCase().includes(totalearchQuery.toLowerCase())
-    )
-  );
+  // React-Table Hooks for Present and Total Tables
+  const presentTable = useTable({ columns: presentColumns, data: presentDataFiltered });
+  const totalTable = useTable({ columns: totalColumns, data: totalDataFiltered });
 
 
   return (
@@ -113,164 +165,92 @@ const ManagerHome = () => {
           </div>
         </div>
 
-        <div className={styles.dashboardContent}>
-          <div className={styles.tables}>
-            <div className={styles.searchContainer}>
-              <div className={styles.collapseButtonContainer}>
-                <p
-                  className={styles.collapseButton}
-                  onClick={() => setIsPresentCollapsed(!isPresentCollapsed)}
-                >
-                  {isPresentCollapsed ? <AiOutlineDown /> : <AiOutlineUp />}
-                </p>
-                <h2 className={styles.present}>Today's Present Employees</h2>
-              </div>
-              <input
-                type="text"
-                className={styles.searchBar}
-                placeholder="Search employees..."
-                value={presentsearchQuery}
-                onChange={(e) => setpresentSearchQuery(e.target.value)}
-              />
+         {/* Present Employees Table */}
+         <div className={styles.tables}>
+          <div className={styles.searchContainer}>
+            <div>
+              <p onClick={() => setIsPresentCollapsed(!isPresentCollapsed)}>
+                {isPresentCollapsed ? <AiOutlineDown /> : <AiOutlineUp />}
+              </p>
+              <h2 className={styles.present}>Today's Present Employees</h2>
             </div>
-
-            {/* Add scrollable wrapper */}
-            <div className={styles.tableContainer}>
-              <table {...getTableProps()} className={styles.table}>
-                <thead>
-                  {headerGroups.map((headerGroup) => (
-                    <tr {...headerGroup.getHeaderGroupProps()}>
-                      {headerGroup.headers.map((column, columnIndex) => (
-                        <th {...column.getHeaderProps()}>
-                          {column.render('Header')}
-                        </th>
+            <input
+              className={styles.searchBar}
+              type="text"
+              placeholder="Search employees..."
+              value={presentSearchQuery}
+              onChange={(e) => setPresentSearchQuery(e.target.value)}
+            />
+          </div>
+          {!isPresentCollapsed && (
+            <table {...presentTable.getTableProps()} className={styles.table}>
+              <thead>
+                {presentTable.headerGroups.map((headerGroup) => (
+                  <tr {...headerGroup.getHeaderGroupProps()}>
+                    {headerGroup.headers.map((column) => (
+                      <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                    ))}
+                  </tr>
+                ))}
+              </thead>
+              <tbody {...presentTable.getTableBodyProps()}>
+                {presentTable.rows.map((row) => {
+                  presentTable.prepareRow(row);
+                  return (
+                    <tr {...row.getRowProps()}>
+                      {row.cells.map((cell) => (
+                        <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
                       ))}
                     </tr>
-                  ))}
-                </thead>
-                <tbody {...getTableBodyProps()}>
-                  {/* Render rows only if the table is not collapsed */}
-                  {!isPresentCollapsed &&
-                    filteredOresentRows.map((row) => {
-                      prepareRow(row);
-                      return (
-                        <tr {...row.getRowProps()}>
-                          {row.cells.map((cell) => (
-                            <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                          ))}
-                        </tr>
-                      );
-                    })}
-                </tbody>
-              </table>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
+        </div>
+
+        {/* Total Employees Table */}
+        <div className={styles.tables}>
+          <div className={styles.searchContainer}>
+          <div>
+            <p onClick={() => setIsTotalCollapsed(!isTotalCollapsed)}>
+              {isTotalCollapsed ? <AiOutlineDown /> : <AiOutlineUp />}
+            </p>
+            <h2>Total Employees</h2>
             </div>
+            <input
+              className={styles.searchBar}
+              type="text"
+              placeholder="Search employees..."
+              value={totalSearchQuery}
+              onChange={(e) => setTotalSearchQuery(e.target.value)}
+            />
           </div>
-
-
-          <div className={styles.tables}>
-            <div className={styles.searchContainer}>
-              <div className={styles.collapseButtonContainer}>
-                <p
-                  className={styles.collapseButton}
-                  onClick={() => setIsAbsentCollapsed(!isAbsentCollapsed)}
-                >
-                  {isAbsentCollapsed ? <AiOutlineDown /> : <AiOutlineUp />}
-                </p>
-                <h2 className={styles.absent}>Today's Absent Employees</h2>
-              </div>
-              <input
-                type="text"
-                className={styles.searchBar}
-                placeholder="Search employees..."
-                value={absentsearchQuery}
-                onChange={(e) => seabsentSearchQuery(e.target.value)}
-              />
-            </div>
-
-            {/* Add scrollable wrapper */}
-            <div className={styles.tableContainer}>
-              <table {...getTableProps()} className={styles.table}>
-                <thead>
-                  {headerGroups.map((headerGroup) => (
-                    <tr {...headerGroup.getHeaderGroupProps()}>
-                      {headerGroup.headers.map((column, columnIndex) => (
-                        <th {...column.getHeaderProps()}>
-                          {column.render('Header')}
-                        </th>
+          {!isTotalCollapsed && (
+            <table {...totalTable.getTableProps()} className={styles.table}>
+              <thead>
+                {totalTable.headerGroups.map((headerGroup) => (
+                  <tr {...headerGroup.getHeaderGroupProps()}>
+                    {headerGroup.headers.map((column) => (
+                      <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                    ))}
+                  </tr>
+                ))}
+              </thead>
+              <tbody {...totalTable.getTableBodyProps()}>
+                {totalTable.rows.map((row) => {
+                  totalTable.prepareRow(row);
+                  return (
+                    <tr {...row.getRowProps()}>
+                      {row.cells.map((cell) => (
+                        <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
                       ))}
                     </tr>
-                  ))}
-                </thead>
-                <tbody {...getTableBodyProps()}>
-                  {/* Render rows only if the table is not collapsed */}
-                  {!isAbsentCollapsed &&
-                    filteredAbsentRows.map((row) => {
-                      prepareRow(row);
-                      return (
-                        <tr {...row.getRowProps()}>
-                          {row.cells.map((cell) => (
-                            <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                          ))}
-                        </tr>
-                      );
-                    })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div className={styles.tables}>
-            <div className={styles.searchContainer}>
-              <div className={styles.collapseButtonContainer}>
-                <p
-                  className={styles.collapseButton}
-                  onClick={() => setIsTotalCollapsed(!isTotalCollapsed)}
-                >
-                  {isTotalCollapsed ? <AiOutlineDown /> : <AiOutlineUp />}
-                </p>
-                <h2>Total Employees</h2>
-              </div>
-              <input
-                type="text"
-                className={styles.searchBar}
-                placeholder="Search employees..."
-                value={totalearchQuery}
-                onChange={(e) => setTotalSearchQuery(e.target.value)}
-              />
-            </div>
-
-            {/* Add scrollable wrapper */}
-            <div className={styles.tableContainer}>
-              <table {...getTableProps()} className={styles.table}>
-                <thead>
-                  {headerGroups.map((headerGroup) => (
-                    <tr {...headerGroup.getHeaderGroupProps()}>
-                      {headerGroup.headers.map((column, columnIndex) => (
-                        <th {...column.getHeaderProps()}>
-                          {column.render('Header')}
-                        </th>
-                      ))}
-                    </tr>
-                  ))}
-                </thead>
-                <tbody {...getTableBodyProps()}>
-                  {/* Render rows only if the table is not collapsed */}
-                  {!isTotalCollapsed &&
-                    filteredTotRowals.map((row) => {
-                      prepareRow(row);
-                      return (
-                        <tr {...row.getRowProps()}>
-                          {row.cells.map((cell) => (
-                            <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                          ))}
-                        </tr>
-                      );
-                    })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>

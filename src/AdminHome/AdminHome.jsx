@@ -146,7 +146,7 @@ const AdminHome = () => {
       </div>
 
       <div className={styles.content}>
-      <div className={styles.header}>
+        <div className={styles.header}>
           {/* Left Side */}
           <div className={styles.headerLeft}>
             <span className={`${styles.dot} ${styles.red}`}></span>
@@ -168,11 +168,15 @@ const AdminHome = () => {
         {/* Present Employees Table */}
         <div className={styles.tables}>
           <div className={styles.searchContainer}>
-            <p onClick={() => setIsPresentCollapsed(!isPresentCollapsed)}>
-              {isPresentCollapsed ? <AiOutlineDown /> : <AiOutlineUp />}
-            </p>
-            <h2>Today's Present Employees</h2>
+            <div>
+              <p onClick={() => setIsPresentCollapsed(!isPresentCollapsed)}>
+                {isPresentCollapsed ? <AiOutlineDown /> : <AiOutlineUp />}
+              </p>
+              <h2>Today's Present Employees</h2>
+            </div>
+
             <input
+              className={styles.searchBar}
               type="text"
               placeholder="Search employees..."
               value={presentSearchQuery}
@@ -209,11 +213,14 @@ const AdminHome = () => {
         {/* Total Employees Table */}
         <div className={styles.tables}>
           <div className={styles.searchContainer}>
+          <div>
             <p onClick={() => setIsTotalCollapsed(!isTotalCollapsed)}>
               {isTotalCollapsed ? <AiOutlineDown /> : <AiOutlineUp />}
             </p>
             <h2>Total Employees</h2>
+            </div>
             <input
+              className={styles.searchBar}
               type="text"
               placeholder="Search employees..."
               value={totalSearchQuery}

@@ -88,6 +88,7 @@
 
 .tables {
   margin-bottom: 30px;
+  margin-top: 30px;
 }
 
 .table {
@@ -163,6 +164,16 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.searchContainer>div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.searchContainer>div>h2 {
+  font-size: 14px;
 }
 
 .searchBar {

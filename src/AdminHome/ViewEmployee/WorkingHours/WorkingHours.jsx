@@ -6,7 +6,6 @@ import { AiOutlineDown, AiOutlineUp } from 'react-icons/ai';
 
 const WorkingHours = ({ employeeIds }) => {
     const [attendanceData, setAttendanceData] = useState([]);
-    const [isTotalCollapsed, setIsTotalCollapsed] = useState(false);
     const [totalSearchQuery, setTotalSearchQuery] = useState('');
 
     useEffect(() => {
@@ -126,16 +125,8 @@ const WorkingHours = ({ employeeIds }) => {
 
     return (
         <div className={styles.tableContainer}>
+        <h4>Working Hours</h4>
             <div className={styles.searchContainer}>
-                <div className={styles.collapseButtonContainer}>
-                    <p
-                        className={styles.collapseButton}
-                        onClick={() => setIsTotalCollapsed(!isTotalCollapsed)}
-                    >
-                        {isTotalCollapsed ? <AiOutlineDown /> : <AiOutlineUp />}
-                    </p>
-                    <h2>Workhours</h2>
-                </div>
                 <input
                     type="text"
                     className={styles.searchBar}
@@ -153,7 +144,7 @@ const WorkingHours = ({ employeeIds }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {isTotalCollapsed && filteredTotRowals && filteredTotRowals.map((row, index) => (
+                    {filteredTotRowals && filteredTotRowals.map((row, index) => (
                         <tr key={index} className={styles.tr}>
                             {columns.map((col, colIndex) => (
                                 <td key={colIndex} className={styles.td} data-label={col.Header}>

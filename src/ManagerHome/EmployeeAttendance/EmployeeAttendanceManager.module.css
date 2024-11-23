@@ -380,6 +380,14 @@ input[type="text"]:focus {
   position: relative;
 }
 
+.halfDay {
+  background-color: #cdff70;
+  color: #000;
+  font-weight: bold;
+  border-radius: 0px;
+  position: relative;
+}
+
 .tooltip {
   position: absolute;
   top: -30px;
@@ -418,6 +426,11 @@ input[type="text"]:focus {
 }
 
 .default:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+.halfDay:hover .tooltip {
   visibility: visible;
   opacity: 1;
 }
@@ -500,3 +513,23 @@ input[type="text"]:focus {
   justify-content: center;
   gap: 20px;
 }
+
+.movingline {
+  width: 100%;
+  height: 5px;
+  background-color: #28a745;
+  position: fixed;
+  top: 0;
+  left: -100%;
+  animation: moveLine 5s forwards;
+}
+
+@keyframes moveLine {
+  0% {
+    left: -100%; /* Start off-screen */
+  }
+  100% {
+    left: 0; /* End at the full width of the page */
+  }
+}
+

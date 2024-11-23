@@ -7,7 +7,6 @@ import styles from './WorkingHours.module.css';
 
 const WorkingHours = ({ employeeIds }) => {
     const [attendanceData, setAttendanceData] = useState([]);
-    const [isTotalCollapsed, setIsTotalCollapsed] = useState(false);
     const [totalSearchQuery, setTotalSearchQuery] = useState('');
 
     useEffect(() => {
@@ -102,41 +101,19 @@ const WorkingHours = ({ employeeIds }) => {
             { Header: 'Sign In', accessor: 'signIn' },
             { Header: 'Sign Out', accessor: 'signOut' },
             { Header: 'Working Hours', accessor: 'workingHours' },
-            {
-                Header: 'Action',
-                accessor: 'action',
-                Cell: ({ row }) => (
-                    <button
-                        onClick={() => handleMarkAbsent(row.original.employeeId)}
-                        className={styles.absentButton}
-                    >
-                        Mark as Absent
-                    </button>
-                ),
-            },
         ],
         []
     );
-
     const filteredTotRowals = attendanceData.filter(row =>
         row && Object.values(row).some(field =>
             String(field).toLowerCase().includes(totalSearchQuery.toLowerCase())
         )
     );
-
-
+    
     return (
         <div className={styles.tableContainer}>
+        <h4>Working Hours</h4>
             <div className={styles.searchContainer}>
-                <div className={styles.collapseButtonContainer}>
-                    <p
-                        className={styles.collapseButton}
-                        onClick={() => setIsTotalCollapsed(!isTotalCollapsed)}
-                    >
-                        {isTotalCollapsed ? <AiOutlineDown /> : <AiOutlineUp />}
-                    </p>
-                    <h2>Workhours</h2>
-                </div>
                 <input
                     type="text"
                     className={styles.searchBar}
@@ -154,7 +131,7 @@ const WorkingHours = ({ employeeIds }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {isTotalCollapsed && filteredTotRowals && filteredTotRowals.map((row, index) => (
+                    {filteredTotRowals && filteredTotRowals.map((row, index) => (
                         <tr key={index} className={styles.tr}>
                             {columns.map((col, colIndex) => (
                                 <td key={colIndex} className={styles.td} data-label={col.Header}>
@@ -169,6 +146,5 @@ const WorkingHours = ({ employeeIds }) => {
         </div>
     );
 };
-
 
 export default WorkingHours

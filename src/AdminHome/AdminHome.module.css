@@ -166,20 +166,24 @@
   align-items: center;
 }
 
-.searchContainer>h2 {
-  font-size: 11px;
+.searchContainer>div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.searchContainer>div>h2 {
+  font-size: 14px;
 }
 
 .searchBar {
   width: 100%;
-  max-width: 300px; /* Adjust the max width as needed */
+  max-width: 300px;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
   transition: all 0.3s ease;
-
-  /* Add focus effect */
   outline: none;
 }
 

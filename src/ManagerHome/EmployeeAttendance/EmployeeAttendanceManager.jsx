@@ -23,7 +23,6 @@ const EmployeeAttendanceManager = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({});
   const [managers, setManagers] = useState([]);
-  const [daysInMonth, setDaysInMonth] = useState([]);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
   const employeeIds = employees.map((employee) => employee.employeeId);
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
@@ -31,8 +30,10 @@ const EmployeeAttendanceManager = () => {
   const [highlightedDates, setHighlightedDates] = useState([]);
   const [hoursNotComplete, setHoursNotComplete] = useState([]);
   const [leavesDate, setLeavesDate] = useState([]);
+  const [halfDayDate, setHalfDayDate] = useState([]);
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
+  const [showNotification, setShowNotification] = useState(false);
 
   useEffect(() => {
     const fetchEmployeeData = async () => {
@@ -115,21 +116,11 @@ const EmployeeAttendanceManager = () => {
               [`${today}.signIn`]: false,
               [`${today}.signOutTime`]: new Date().toLocaleString(),
             });
-            Swal.fire({
-              icon: 'success',
-              title: 'Signed Out',
-              text: `${employeeName} has successfully signed out.`,
-            });
           } else {
             // Sign in the employee
             await updateDoc(employeeDocRef, {
               [`${today}.signIn`]: true,
               [`${today}.signInTime`]: new Date().toLocaleString(),
-            });
-            Swal.fire({
-              icon: 'success',
-              title: 'Signed In',
-              text: `${employeeName} has successfully signed in.`,
             });
           }
         } else {
@@ -143,11 +134,6 @@ const EmployeeAttendanceManager = () => {
               signIn: true,
             },
           });
-          Swal.fire({
-            icon: 'success',
-            title: 'Attendance Recorded',
-            text: `${employeeName}'s attendance has been recorded as signed in.`,
-          });
         }
       } else {
         await setDoc(employeeDocRef, {
@@ -159,12 +145,14 @@ const EmployeeAttendanceManager = () => {
             signIn: true,
           },
         });
-        Swal.fire({
-          icon: 'success',
-          title: 'Attendance Created',
-          text: `${employeeName}'s attendance has been created.`,
-        });
       }
+
+      // Set flag in sessionStorage to show notification on page reload
+      sessionStorage.setItem('attendanceSuccess', 'true');
+
+      // Refresh the page
+      window.location.reload();
+
     } catch (error) {
       console.error('Error in attendance handling:', error);
 
@@ -176,6 +164,15 @@ const EmployeeAttendanceManager = () => {
     }
   };
 
+  useEffect(() => {
+    if (sessionStorage.getItem('attendanceSuccess')) {
+      setShowNotification(true);
+      sessionStorage.removeItem('attendanceSuccess');
+      setTimeout(() => {
+        setShowNotification(false);
+      }, 4000);
+    }
+  }, []);
 
   // Update the attendance button text when employee data or attendance data changes
   useEffect(() => {
@@ -355,32 +352,6 @@ const EmployeeAttendanceManager = () => {
     }
   };
 
-  const getStatus = async (employeeId) => {
-    try {
-      const today = getFormattedDate();
-      const employeeDocRef = doc(fireDB, 'AttendanceData', employeeId);
-      const employeeDocSnap = await getDoc(employeeDocRef);
-
-      if (employeeDocSnap.exists()) {
-        const attendanceData = employeeDocSnap.data();
-        const todayAttendance = attendanceData[today];
-
-        if (todayAttendance) {
-          if (todayAttendance.signInSignOut === false) {
-            return 'On Leave';
-          }
-          if (todayAttendance.signIn === true) {
-            return 'Present';
-          }
-        }
-      }
-      return 'Absent';
-    } catch (error) {
-      console.error('Error fetching status for employee:', employeeId, error);
-      return 'Error';
-    }
-  };
-
   const columns = React.useMemo(
     () => [
       {
@@ -426,29 +397,14 @@ const EmployeeAttendanceManager = () => {
         ),
       },
       {
-        Header: 'Status',
-        accessor: 'status',
-        Cell: ({ row }) => {
-          const [status, setStatus] = React.useState('Its Loading');
-          const employeeId = row.original.employeeId;
-
-          useEffect(() => {
-            const fetchStatus = async () => {
-              const employeeStatus = await getStatus(employeeId);
-              setStatus(employeeStatus);
-            };
-            fetchStatus();
-          }, [employeeId]);
-
-          return <span>{status}</span>;
-        },
-      },
-      {
         Header: 'Action',
         Cell: ({ row }) => (
           <div className={styles.tableIcon}>
             <span onClick={() => handleEdit(row.original)}>
               <FaEdit />
+            </span>
+            <span className={styles.trash} onClick={() => handleDelete(row.original)}>
+              <FaTrash />
             </span>
             <span className={styles.trash} onClick={() => handleCalendar(row.original)}>
               <FaCalendarAlt />
@@ -576,25 +532,6 @@ const EmployeeAttendanceManager = () => {
     )
   );
 
-  const [events, setEvents] = useState([]);
-
-  const handleDateClick = (info) => {
-    console.log('Date clicked:', info.dateStr); // You can handle click event here
-  };
-
-  const handleEventClick = (info) => {
-    console.log('Event clicked:', info.event.title); // You can handle event click here
-  };
-
-  const handleEventAdd = (info) => {
-    const newEvent = {
-      title: 'New Event',
-      start: info.startStr,
-      end: info.endStr,
-    };
-    setEvents([...events, newEvent]); // Add event to state
-  };
-
   const formatDate = (date) => {
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -643,12 +580,6 @@ const EmployeeAttendanceManager = () => {
     });
   };
 
-  // Handle when user clicks on the calendar icon
-  const handleCalendarToggle = (employeeData) => {
-    setSelectedEmployeeId(employeeData.employeeId);
-    setIsCalendarVisible(true);
-  };
-
 
   const tileClassName = (date) => {
     const dateStr = formatDate(date);
@@ -663,6 +594,9 @@ const EmployeeAttendanceManager = () => {
     if (hoursNotComplete.includes(dateStr)) {
       return styles.notComplete;
     }
+    if (halfDayDate.includes(dateStr)) {
+      return styles.halfDay;
+    }
 
     // Default class (if needed) to avoid empty strings
     return styles.default || null;
@@ -673,51 +607,47 @@ const EmployeeAttendanceManager = () => {
       // Fetch attendance data for the given employee ID
       const docRef = doc(fireDB, "AttendanceData", employeeId);
       const docSnap = await getDoc(docRef);
-
       if (docSnap.exists()) {
         const attendanceData = docSnap.data();
-
         let tempHighlightedDates = [];
         let tempHoursNotComplete = [];
         let tempLeavesDate = [];
-
+        let temphalfDay = [];
         // Loop through each date object in the document
         for (const date in attendanceData) {
           const dateData = attendanceData[date];
-
           // Check if there's 'signInTime' and 'signOutTime'
           if (dateData.signInTime && dateData.signOutTime) {
             // Parse the sign-in and sign-out times
             const signInTime = parse(dateData.signInTime, 'MM/dd/yyyy, hh:mm:ss a', new Date());
             const signOutTime = parse(dateData.signOutTime, 'MM/dd/yyyy, hh:mm:ss a', new Date());
-
             // Calculate the worked hours
             const workedHours = (signOutTime - signInTime) / (1000 * 60 * 60);
-            console.log(employeeId + " " + workedHours);
             // Check if worked hours are greater than 8
-            if (workedHours > 8) {
-              tempHighlightedDates.push(date);
-            } else {
+            if (workedHours <= 5) {
               tempHoursNotComplete.push(date);
+            } else if (workedHours >= 5 && workedHours <= 8) {
+              temphalfDay.push(date);
+            } else {
+              tempHighlightedDates.push(date);
             }
           }
-
-          // Check if 'UnpaidLeaves' or 'PaidLeaves' is present
           if (dateData.UnpaidLeaves || dateData.PaidLeaves) {
             tempLeavesDate.push(date); // Add to leavesDate
           }
         }
 
-        // Update the states
         setHighlightedDates(tempHighlightedDates);
         setHoursNotComplete(tempHoursNotComplete);
         setLeavesDate(tempLeavesDate);
+        setHalfDayDate(temphalfDay);
       } else {
         // If no matching document, clear the arrays
         console.log("No such document!");
         setHighlightedDates([]);
         setHoursNotComplete([]);
         setLeavesDate([]);
+        setHalfDayDate([]);
       }
     } catch (error) {
       console.error("Error getting document:", error);
@@ -726,11 +656,12 @@ const EmployeeAttendanceManager = () => {
       setHighlightedDates([]);
       setHoursNotComplete([]);
       setLeavesDate([]);
+      setHalfDayDate([]);
     }
   };
 
   return (
-     <div className={styles.main}>
+    <div className={styles.main}>
       {/* Sidebar */}
       <div className={styles.sidebar}>
         <ManagerSidebar />
@@ -753,8 +684,12 @@ const EmployeeAttendanceManager = () => {
             <Power className={styles.icon} title="Logout" />
           </div>
         </div>
+        {showNotification && (
+        <div className={styles.movingline}></div>
+      )}
 
-        <div className={styles.tables}>
+
+      <div className={styles.tables}>
           <div className={styles.searchContainer}>
             <div className={styles.collapseButtonContainer}>
               <p
@@ -925,6 +860,7 @@ const EmployeeAttendanceManager = () => {
                           const isHighlighted = highlightedDates.includes(dateStr);
                           const isLeaveDay = leavesDate.includes(dateStr);
                           const isHoursNotComplete = hoursNotComplete.includes(dateStr);
+                          const isHalfDay = halfDayDate.includes(dateStr);
                           cells.push(
                             <td
                               key={dayIndex}
@@ -953,7 +889,14 @@ const EmployeeAttendanceManager = () => {
                                   </div>
                                 </div>
                               )}
-                              {!isLeaveDay && !isHighlighted && !isHoursNotComplete && (
+                              {isHalfDay && (
+                                <div className={styles.tooltip}>
+                                  <div className={styles.present}>
+                                    <p>Half Day</p>
+                                  </div>
+                                </div>
+                              )}
+                              {!isLeaveDay && !isHighlighted && !isHoursNotComplete && !isHalfDay && (
                                 <div className={styles.tooltip}>
                                   <div className={styles.present}>
                                     <p>No Sign In</p>
