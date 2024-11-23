@@ -7,6 +7,8 @@ import emailjs from 'emailjs-com';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, fireDB } from '../../Firebase/FirebaseConfig'; 
 import { collection, doc, setDoc } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
+import { signOut } from 'firebase/auth';
 
 const InviteManager = () => {
   const [formData, setFormData] = useState({
@@ -29,6 +31,17 @@ const InviteManager = () => {
 
   const handleFileChange = (e) => {
     setFormData((prev) => ({ ...prev, aadharCard: e.target.files[0] }));
+  };
+
+  const navigate = useNavigate(); // Initialize navigate
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth); // Sign out the user
+      navigate('/'); // Redirect to the login or home page
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   };
 
   const sendEmail = (toEmail, username, password) => {
@@ -123,7 +136,11 @@ const InviteManager = () => {
           {/* Right Side */}
           <div className={styles.headerRight}>
             <Bell className={styles.icon} title="Notifications" />
-            <Power className={styles.icon} title="Logout" />
+            <Power
+              className={styles.icon}
+              title="Logout"
+              onClick={handleLogout} // Trigger logout on click
+            />
           </div>
         </div>
 

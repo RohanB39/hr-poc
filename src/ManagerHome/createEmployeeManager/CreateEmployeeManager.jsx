@@ -5,6 +5,8 @@ import ManagerSidebar from '../ManagerSidebar/ManagerSidebar';
 import Swal from 'sweetalert2';
 import { auth, fireDB } from '../../Firebase/FirebaseConfig';
 import { collection, doc, setDoc, getDocs } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
+import { signOut } from 'firebase/auth';
 
 const CreateEmployeeManager = () => {
   const [formData, setFormData] = useState({
@@ -39,6 +41,17 @@ const CreateEmployeeManager = () => {
 
     generateEmployeeID(); // Call the function when component mounts
   }, []);
+
+  const navigate = useNavigate(); // Initialize navigate
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth); // Sign out the user
+      navigate('/'); // Redirect to the login or home page
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -114,7 +127,11 @@ const CreateEmployeeManager = () => {
           {/* Right Side */}
           <div className={styles.headerRight}>
             <Bell className={styles.icon} title="Notifications" />
-            <Power className={styles.icon} title="Logout" />
+            <Power
+              className={styles.icon}
+              title="Logout"
+              onClick={handleLogout} // Trigger logout on click
+            />
           </div>
         </div>
 

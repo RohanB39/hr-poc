@@ -41,6 +41,29 @@ h2 {
   margin-bottom: 20px;
 }
 
+.inputGroupp {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.inputGroupp input {
+  width: 100%;
+  padding: 20px 15px;
+  padding-left: 35px;
+  font-size: 0.7rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.inputGroupp .iconn {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  color: #888;
+}
+
 .inputGroup input {
   width: 100%;
   padding: 15px 15px;
@@ -57,6 +80,10 @@ h2 {
   transform: translateY(-50%);
   font-size: 1rem;
   color: #888;
+}
+
+.username {
+  padding-left: 20px;
 }
 
 .sign {

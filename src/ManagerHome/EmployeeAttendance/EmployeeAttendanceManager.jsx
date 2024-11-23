@@ -12,6 +12,9 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { parse, format } from 'date-fns';
 import WorkingHours from './workingHours/WorkingHours';
+import { useNavigate } from 'react-router-dom';
+import { signOut } from 'firebase/auth';
+import { auth } from '../../Firebase/FirebaseConfig';
 
 const EmployeeAttendanceManager = () => {
   const [isTotalCollapsed, setIsTotalCollapsed] = useState(false);
@@ -34,6 +37,18 @@ const EmployeeAttendanceManager = () => {
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
   const [showNotification, setShowNotification] = useState(false);
+
+
+  const navigate = useNavigate(); // Initialize navigate
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth); // Sign out the user
+      navigate('/'); // Redirect to the login or home page
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
 
   useEffect(() => {
     const fetchEmployeeData = async () => {
@@ -681,7 +696,11 @@ const EmployeeAttendanceManager = () => {
           {/* Right Side */}
           <div className={styles.headerRight}>
             <Bell className={styles.icon} title="Notifications" />
-            <Power className={styles.icon} title="Logout" />
+            <Power
+              className={styles.icon}
+              title="Logout"
+              onClick={handleLogout} // Trigger logout on click
+            />
           </div>
         </div>
         {showNotification && (

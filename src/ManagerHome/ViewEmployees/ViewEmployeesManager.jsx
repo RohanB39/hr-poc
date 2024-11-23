@@ -6,16 +6,25 @@ import { AiOutlineDown, AiOutlineUp } from 'react-icons/ai';
 import { useTable } from 'react-table';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { fireDB } from '../../Firebase/FirebaseConfig';
+import { useNavigate } from 'react-router-dom';
+import { signOut } from 'firebase/auth';
+import { auth } from '../../Firebase/FirebaseConfig';
 
 const ViewEmployeesManager = () => {
-
-  const [isPresentCollapsed, setIsPresentCollapsed] = useState(false);
   const [isTotalCollapsed, setIsTotalCollapsed] = useState(false);
-  const [presentData, setPresentData] = useState([]);
   const [totalData, setTotalData] = useState([]);
-  const [presentSearchQuery, setPresentSearchQuery] = useState('');
   const [totalSearchQuery, setTotalSearchQuery] = useState('');
 
+  const navigate = useNavigate(); // Initialize navigate
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth); // Sign out the user
+      navigate('/'); // Redirect to the login or home page
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
 
   useEffect(() => {
     const fetchTotalEmployeesData = async () => {
@@ -86,7 +95,11 @@ const ViewEmployeesManager = () => {
           {/* Right Side */}
           <div className={styles.headerRight}>
             <Bell className={styles.icon} title="Notifications" />
-            <Power className={styles.icon} title="Logout" />
+            <Power
+              className={styles.icon}
+              title="Logout"
+              onClick={handleLogout} // Trigger logout on click
+            />
           </div>
         </div>
 

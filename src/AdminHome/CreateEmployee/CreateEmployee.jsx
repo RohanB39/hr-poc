@@ -4,7 +4,9 @@ import styles from './CreateEmployee.module.css';
 import { Bell, Power } from 'react-feather';
 import Swal from 'sweetalert2';
 import { auth, fireDB } from '../../Firebase/FirebaseConfig';
+import { useNavigate } from 'react-router-dom';
 import { collection, doc, setDoc, getDocs } from 'firebase/firestore';
+import { signOut } from 'firebase/auth';
 
 const CreateEmployee = () => {
   const [formData, setFormData] = useState({
@@ -95,6 +97,16 @@ const CreateEmployee = () => {
       });
     }
   };
+  const navigate = useNavigate(); // Initialize navigate
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth); // Sign out the user
+      navigate('/'); // Redirect to the login or home page
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
 
   return (
     <div className={styles.main}>
@@ -117,7 +129,11 @@ const CreateEmployee = () => {
           {/* Right Side */}
           <div className={styles.headerRight}>
             <Bell className={styles.icon} title="Notifications" />
-            <Power className={styles.icon} title="Logout" />
+            <Power
+              className={styles.icon}
+              title="Logout"
+              onClick={handleLogout} // Trigger logout on click
+            />
           </div>
         </div>
 

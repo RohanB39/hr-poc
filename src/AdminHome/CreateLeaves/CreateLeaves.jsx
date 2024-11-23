@@ -5,6 +5,9 @@ import { Bell, Power } from 'react-feather';
 import { fireDB } from '../../Firebase/FirebaseConfig';
 import { collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
 import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
+import { signOut } from 'firebase/auth';
+import { auth } from '../../Firebase/FirebaseConfig';
 
 const CreateLeaves = () => {
   const [selectedEmployee, setSelectedEmployee] = useState('');
@@ -16,6 +19,16 @@ const CreateLeaves = () => {
   const [leaveFrequency, setLeaveFrequency] = useState('');
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
+  const navigate = useNavigate(); // Initialize navigate
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth); // Sign out the user
+      navigate('/'); // Redirect to the login or home page
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -192,7 +205,11 @@ const CreateLeaves = () => {
           {/* Right Side */}
           <div className={styles.headerRight}>
             <Bell className={styles.icon} title="Notifications" />
-            <Power className={styles.icon} title="Logout" />
+            <Power
+              className={styles.icon}
+              title="Logout"
+              onClick={handleLogout} // Trigger logout on click
+            />
           </div>
         </div>
 

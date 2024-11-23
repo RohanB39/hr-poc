@@ -71,8 +71,9 @@ const LoginPage = () => {
           <h2>Login</h2>
           {error && <p className={styles.errorMessage}>{error}</p>}
           <div className={styles.inputGroup}>
-            <FaUser className={styles.icon} />
+            {/* <FaUser className={styles.iconn} /> */}
             <input
+            className={styles.username}
               type="text"
               placeholder="Username"
               value={username}
