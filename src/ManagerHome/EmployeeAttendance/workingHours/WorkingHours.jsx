@@ -12,10 +12,10 @@ const WorkingHours = ({ employeeIds }) => {
     useEffect(() => {
         const fetchAttendance = async () => {
             const data = [];
-            const today = new Date().toISOString().split('T')[0]; // Format date as "YYYY-MM-DD"
+            const today = new Date().toLocaleDateString('en-CA');// Format date as "YYYY-MM-DD"
             // Create an object to hold employee names for faster lookup
             const employeeNames = {};
-
+            console.log("today: "+today);
             // Fetch employee details (firstName + lastName) for each employeeId
             for (const employeeId of employeeIds) {
                 const employeeRef = doc(fireDB, 'EmployeeData', employeeId);
